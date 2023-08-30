@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/main"
+        android:icon="@drawable/img_main"
+        android:title="主页" />
+    <item
+        android:id="@+id/music"
+        android:icon="@drawable/img_music"
+        android:title="音乐" />
+    <item
+        android:id="@+id/mine"
+        android:icon="@drawable/img_mine"
+        android:title="我的" />
+
+
+</menu>
