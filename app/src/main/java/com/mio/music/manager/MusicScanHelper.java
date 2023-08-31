@@ -19,6 +19,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -87,6 +88,11 @@ public class MusicScanHelper {
                 String artist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
                 String album = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM);
                 String duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                byte[] albumArt = retriever.getEmbeddedPicture();
+                if (albumArt != null) {
+                    // 将 albumArt 字节数组与 bean 关联
+                    bean.setAlbumArt(albumArt);
+                }
 
                 bean.setPath(filePath);
                 bean.setTitle(title);
@@ -94,8 +100,11 @@ public class MusicScanHelper {
                 bean.setAlbum(album);
                 bean.setDuration(Long.parseLong(duration));
 
-                Log.d("MusicInfoPrinter", "Title: " + title + ", Artist: " + artist
-                        + ", Album: " + album + ", Duration: " + duration);
+                Log.d("MusicInfoPrinter", "Title: " + title
+                        + ", Artist: " + artist
+                        + ", Album: " + album
+                        + ", Duration: " + duration
+                        + ",album art : " + Arrays.toString(albumArt));
             } catch (RuntimeException | FileNotFoundException e) { // 到这里说明扫描这首歌出意外了
                 e.printStackTrace();
             } catch (IOException e) {

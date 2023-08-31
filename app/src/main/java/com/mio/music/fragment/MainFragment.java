@@ -18,6 +18,7 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.lxj.statelayout.StateLayout;
 import com.mio.basic.BaseFragment;
 import com.mio.music.Constants;
+import com.mio.music.MainActivity;
 import com.mio.music.R;
 import com.mio.music.bean.MusicBean;
 import com.mio.music.databinding.FragmentMainBinding;
@@ -74,9 +75,19 @@ public class MainFragment extends BaseFragment<FragmentMainBinding> {
                 itemBinding.getRoot().setOnClickListener(v -> {
                     LogUtils.d("short click : " + position);
 
-                    MusicManager.getInstance().addToPlayList(adapter.getData());
-                    MusicManager.getInstance().play(position);
-
+                    String playingPath = LiveDataBus.get().with(Constants.playingPath, String.class).getValue();
+                    if (playingPath != null && playingPath.equals(item.getPath())) {
+                        // 已经播放 再次点击
+                        LiveDataBus.get().with(Constants.showPlay).postValue(true);
+                    } else {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                MusicManager.getInstance().addToPlayList(adapter.getData());
+                                MusicManager.getInstance().play(position);
+                            }
+                        }).start();
+                    }
                 });
             }
         };

@@ -17,18 +17,24 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static com.mio.music.manager.MusicScanHelper.*;
+import lombok.Getter;
 
+import static com.mio.music.manager.MusicScanHelper.findFilesWithExtensions;
+import static com.mio.music.manager.MusicScanHelper.mergeAndRemoveDuplicates;
+import static com.mio.music.manager.MusicScanHelper.requireMusicBean;
+import static com.mio.music.manager.MusicScanHelper.scanMusicByContentProvider;
+import static com.mio.music.manager.MusicScanHelper.wrap;
+
+@Getter
 public class MusicManager {
     private static MusicManager instance;
     private MediaPlayer mediaPlayer;
 
     private List<MusicBean> playList = new ArrayList<>();
-    private int playMode = 2;// 播放模式 0: 列表循环 1：单曲循环 2：随机模式
+    private int playMode = 0;// 播放模式 0: 列表循环 1：单曲循环 2：随机模式
+    private boolean playStatus;
 
     private int currentIndex = -1; // 当前播放曲目的下标
 
@@ -40,12 +46,12 @@ public class MusicManager {
                 int currentPosition = mediaPlayer.getCurrentPosition();
                 int duration = mediaPlayer.getDuration();
 
-                int progress = (int) (currentPosition * 100.f / duration);
-                LogUtils.d("progress: " + progress);
+                float progress = (currentPosition * 100.f / duration);
+                // LogUtils.d("progress: " + progress);
                 LiveDataBus.get().with(Constants.musicProgress).postValue(progress);
             }
 
-            handler.postDelayed(progressRunnable, 200);
+            handler.postDelayed(progressRunnable, 16/**/);
         }
     };
 
@@ -80,6 +86,7 @@ public class MusicManager {
                         break;
                     case 2:
                         // todo 随机
+                        next();
                         break;
                 }
             }
@@ -129,10 +136,16 @@ public class MusicManager {
                 e.printStackTrace();
             }
         }
+        setPlayStatus(true);
+    }
+
+    public void play() {
+        play(currentIndex);
     }
 
     public void pause() {
         mediaPlayer.pause();
+        setPlayStatus(false);
     }
 
     public void next() {
@@ -152,7 +165,7 @@ public class MusicManager {
     }
 
     public void previous() {
-        switch (playMode){
+        switch (playMode) {
             case 0:
             case 1:
                 if (currentIndex == 0) {
@@ -196,5 +209,15 @@ public class MusicManager {
         List<MusicBean> list = playList.stream().filter(musicBean ->
                 path.equals(musicBean.getPath())).collect(Collectors.toList());
         return list.size() > 0 ? list.get(0) : null;
+    }
+
+    public void setPlayStatus(boolean playStatus) {
+        this.playStatus = playStatus;
+
+        LiveDataBus.get().with(Constants.playStatus, Boolean.class).postValue(playStatus);
+    }
+
+    public boolean getPlayStatus() {
+        return playStatus;
     }
 }

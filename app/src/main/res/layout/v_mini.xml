@@ -39,22 +39,32 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
+            android:id="@+id/btn_pre"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/pre"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btn_play"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
             android:id="@+id/btn_play"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginEnd="20dp"
-            android:background="@drawable/img_error"
+            android:background="@drawable/pause"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/btn_menu"
+            app:layout_constraintEnd_toStartOf="@id/btn_next"
             app:layout_constraintTop_toTopOf="parent" />
 
 
         <Button
-            android:id="@+id/btn_menu"
+            android:id="@+id/btn_next"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginEnd="20dp"
-            android:background="@drawable/img_error"
+            android:background="@drawable/next"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

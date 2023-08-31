@@ -11,6 +11,7 @@ public class MusicBean {
     private String artist;// 作者名
     private String album;// 预言家
     private long duration;// 时长
+    private byte[] albumArt;
 
     @Override
     public boolean equals(Object o) {

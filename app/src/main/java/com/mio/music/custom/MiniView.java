@@ -14,6 +14,7 @@ import com.mio.music.bean.MusicBean;
 import com.mio.music.databinding.VMiniBinding;
 import com.mio.music.manager.MusicManager;
 import com.mio.music.utils.LiveDataBus;
+import com.mio.music.utils.PlayStatusUtils;
 
 public class MiniView extends BaseView<VMiniBinding> {
     public MiniView(Context context) {
@@ -35,19 +36,23 @@ public class MiniView extends BaseView<VMiniBinding> {
                     }
                     mDataBinding.tvText.setText(text);
                 });
-        LiveDataBus.get().with(Constants.musicProgress, Integer.class)
-                .observe((LifecycleOwner) mContext, integer ->
-                        mDataBinding.miniProgress.setProgress(integer));
+        LiveDataBus.get().with(Constants.musicProgress, Float.class)
+                .observe((LifecycleOwner) mContext, f ->
+                        mDataBinding.miniProgress.setProgress(f / 100.f));
 
         mDataBinding.miniProgress.setProgress(0);
-        mDataBinding.btnPlay.setOnClickListener(v -> MusicManager.getInstance().previous());
-        mDataBinding.btnMenu.setOnClickListener(v -> MusicManager.getInstance().next());
-        mDataBinding.getRoot().setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
+        mDataBinding.btnPre.setOnClickListener(v -> MusicManager.getInstance().previous());
+        mDataBinding.btnNext.setOnClickListener(v -> MusicManager.getInstance().next());
+        mDataBinding.btnPlay.setOnClickListener(v -> {
+            if (MusicManager.getInstance().getPlayStatus()) {
+                MusicManager.getInstance().pause();
+            } else {
+                MusicManager.getInstance().play();
             }
         });
+        mDataBinding.getRoot().setOnClickListener(v ->
+                LiveDataBus.get().with(Constants.showPlay).postValue(true));
+        PlayStatusUtils.bind((LifecycleOwner) mContext, mDataBinding.btnPlay, R.drawable.play, R.drawable.pause);
     }
 
     @Override

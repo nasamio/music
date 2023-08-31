@@ -7,4 +7,6 @@ public interface Constants {
 
     String musicProgress = "musicProgress";
     String playingPath = "playingPath";
+    String showPlay = "showPlay";
+    String playStatus = "playStatus";
 }

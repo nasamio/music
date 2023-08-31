@@ -22,7 +22,7 @@ public class MiniProgress extends View {
     public void setProgress(float progress) {
         if (this.progress != progress) {
             this.progress = progress;
-            invalidate();
+            postInvalidate();
         }
     }
 
@@ -31,6 +31,6 @@ public class MiniProgress extends View {
         paint.setColor(leftColor);
         canvas.drawRect(0, 0, getWidth() * progress, getHeight(), paint);
         paint.setColor(rightColor);
-        canvas.drawRect(getWidth() * progress, 0, getHeight(), getWidth(), paint);
+        canvas.drawRect(getWidth() * progress, 0, getWidth(), getHeight(), paint);
     }
 }

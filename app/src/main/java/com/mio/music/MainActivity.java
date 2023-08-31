@@ -8,8 +8,11 @@ import android.view.View;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.Observer;
 
+import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.core.BasePopupView;
 import com.mio.basic.BaseBottomActivity;
 import com.mio.music.custom.MiniView;
+import com.mio.music.custom.PlayView;
 import com.mio.music.fragment.Fragment2;
 import com.mio.music.fragment.MainFragment;
 import com.mio.music.fragment.MineFragment;
@@ -20,6 +23,7 @@ public class MainActivity extends BaseBottomActivity {
 
 
     private MiniView miniView;
+    private BasePopupView playView;
 
     @Override
     protected void initFragmentList() {
@@ -29,6 +33,7 @@ public class MainActivity extends BaseBottomActivity {
         mDataBinding.vp.setOffscreenPageLimit(2);
 
         initMini();
+        initObserver();
     }
 
     private void initMini() {
@@ -54,6 +59,25 @@ public class MainActivity extends BaseBottomActivity {
                         miniView.getAlpha(), 1)
                         .setDuration(2_000)
                         .start();
+            }
+        });
+    }
+
+    @Override
+    protected void initView() {
+        super.initView();
+        playView = new XPopup.Builder(this)
+                .asCustom(new PlayView(this));
+        playView.popupInfo.isDismissOnTouchOutside = false;
+        playView.popupInfo.animationDuration = 800;
+    }
+
+    private void initObserver() {
+        LiveDataBus.get().with(Constants.showPlay, Boolean.class).observe(this, show -> {
+            if (show) {
+                playView.show();
+            } else {
+                playView.smartDismiss();
             }
         });
     }
